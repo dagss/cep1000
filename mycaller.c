@@ -18,13 +18,12 @@ double docall_intern(PyMyCallable *obj, double argument) {
         if (sig == mismatch0) {
           exit(4);
         } else if (sig == mismatch1) {
-          exit(4);
+          exit(5);
         } else if (sig == mismatch2) {
-          exit(4);
+          exit(6);
         } else if (sig == mismatch3) {
-          exit(4);
-        }
-        if (sig == interned_dd) {
+          exit(7);
+        } else if (sig == interned_dd) {
           callable_func_t pfunc = slots->funcptr;
           return (*pfunc)(argument);
         } else if (sig == NULL) {
@@ -47,23 +46,19 @@ double docall_key(PyMyCallable *obj, double argument) {
     if (nativecall_offset != 0) {
       key_call_slot_t *slots = *(key_call_slot_t**)((char*)obj + nativecall_offset);
       while (1) {
-        switch (slots->key) {
-        case 1:
+        size_t key = slots->key;
+        if (key == 1) {
           exit(4);
-        case 0x34524561234:
-          exit(4);
-        case 0x324563243223:
-          exit(4);
-        case 0x8534f324234:
-          exit(4);
-        case 0x5343276534324:
-          exit(4);
-        case FUNC_KEY:
-          {
-            callable_func_t pfunc = slots->funcptr;
-            return (*pfunc)(argument);
-          }
-        case 0:
+        } else if (key == 0x34524561234) {
+          exit(5);
+        } else if (key == 0x324563243223) {
+          exit(6);
+        } else if (key == 0x8534f324234) {
+          exit(7);
+        } else if (key == FUNC_KEY) {
+          callable_func_t pfunc = slots->funcptr;
+          return (*pfunc)(argument);
+        } else if (key == 0) {
           exit(3);
         }
         slots++;
