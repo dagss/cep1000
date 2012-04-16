@@ -2,7 +2,7 @@
 #include "cep1000test.h"
 
 #define J 100000
-#define K 1000
+#define K 5000
 
 static double walltime() {
   struct timespec tv;
