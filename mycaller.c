@@ -56,7 +56,8 @@ double docall_key(PyMyCallable *obj, double argument) {
           exit(7);
           } else*/
         if (slots->key1 == FUNC_KEY1 && slots->key2 == FUNC_KEY2 && 
-            slots->key3 == FUNC_KEY3) {
+            slots->key3 == FUNC_KEY3 && slots->key4 == FUNC_KEY4 &&
+            slots->key5 == FUNC_KEY5) {
           callable_func_t pfunc = slots->funcptr;
           return (*pfunc)(argument);
         } else if (slots->key1 == 0) {

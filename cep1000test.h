@@ -2,9 +2,11 @@
 
 #define TPFLAGS_UNOFFICIAL 20
 
-#define FUNC_KEY1 0x1234567
-#define FUNC_KEY2 0x1234fb3
-#define FUNC_KEY3 0x1236543f
+#define FUNC_KEY1 0x1234567bbbb
+#define FUNC_KEY2 0x1234fb3bbbb
+#define FUNC_KEY3 0x1236543fbbb
+#define FUNC_KEY4 0x12323affbbb
+#define FUNC_KEY5 0x123bbbbbbfb
 
 typedef struct {
   PyTypeObject tp_base;
@@ -24,7 +26,7 @@ typedef struct {
 } intern_call_slot_t;
 
 typedef struct {
-  size_t key1, key2, key3;
+  size_t key1, key2, key3, key4, key5;
   void *funcptr;
 } key_call_slot_t;
 
