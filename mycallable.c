@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include "cep1000test.h"
 
-#define N 10
+#define N 1
 
 PyUnofficialTypeObject my_callable_type;
 
