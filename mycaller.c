@@ -46,7 +46,6 @@ double docall_key(PyMyCallable *obj, double argument) {
     if (nativecall_offset != 0) {
       key_call_slot_t *slots = *(key_call_slot_t**)((char*)obj + nativecall_offset);
       while (1) {
-        size_t key = slots->key;
         /*if (key == 1) {
           exit(4);
         } else if (key == 0x34524561234) {
@@ -55,10 +54,12 @@ double docall_key(PyMyCallable *obj, double argument) {
           exit(6);
         } else if (key == 0x8534f324234) {
           exit(7);
-          } else*/ if (key == FUNC_KEY) {
+          } else*/
+        if (slots->key1 == FUNC_KEY1 && slots->key2 == FUNC_KEY2 && 
+            slots->key3 == FUNC_KEY3) {
           callable_func_t pfunc = slots->funcptr;
           return (*pfunc)(argument);
-        } else if (key == 0) {
+        } else if (slots->key1 == 0) {
           exit(3);
         }
         slots++;
