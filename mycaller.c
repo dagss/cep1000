@@ -57,7 +57,8 @@ double docall_key(PyMyCallable *obj, double argument) {
           } else*/
         if (slots->key1 == FUNC_KEY1 && slots->key2 == FUNC_KEY2 && 
             slots->key3 == FUNC_KEY3 && slots->key4 == FUNC_KEY4 &&
-            slots->key5 == FUNC_KEY5) {
+            slots->key5 == FUNC_KEY5 && slots->key6 == FUNC_KEY6 &&
+            slots->key7 == FUNC_KEY7) {
           callable_func_t pfunc = slots->funcptr;
           return (*pfunc)(argument);
         } else if (slots->key1 == 0) {
@@ -72,6 +73,7 @@ double docall_key(PyMyCallable *obj, double argument) {
     exit(2);
   }
 }
+
 
 void initialize_mycaller() {
   interned_dd = get_interned_dd();
