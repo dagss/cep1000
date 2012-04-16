@@ -7,5 +7,6 @@ libmycallable.so: mycallable.c Makefile
 	gcc $(CFLAGS) -shared -o libmycallable.so mycallable.c
 
 libmycaller.so: mycaller.c Makefile
+	gcc $(CFLAGS) -S -o mycaller.S mycaller.c
 	gcc $(CFLAGS) -shared -o libmycaller.so mycaller.c
 
