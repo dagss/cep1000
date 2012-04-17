@@ -24,7 +24,7 @@ static void snftime(char *buf, size_t n, double time) {
   } else {
     units = "s";
   }
-  snprintf(buf, n, "%.1f %s", time, units);
+  snprintf(buf, n, "%.2f %s", time, units);
   buf[n - 1] = '\0';
 }
 
