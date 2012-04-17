@@ -1,7 +1,7 @@
 #include <time.h>
 #include "cep1000test.h"
 
-#define J 10000
+#define J 100000
 #define K 10000
 
 static double walltime() {

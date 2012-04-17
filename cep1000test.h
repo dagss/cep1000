@@ -1,5 +1,13 @@
 #include <Python.h>
 
+/* number of overloads in callable's list; matching one will be the last */
+#define N 10
+/* should caller try to match 4 non-matching signatures before the match? */
+#define MISMATCHES 1
+/* use likely macro around match? */
+#define USE_LIKELY 0
+
+
 #define TPFLAGS_UNOFFICIAL 20
 
 
@@ -29,7 +37,7 @@ typedef struct {
 } intern_call_slot_t;
 
 typedef struct {
-  size_t key1, key2, key3, key4, key5, key6, key7;
+  size_t key1;
   void *funcptr;
 } key_call_slot_t;
 

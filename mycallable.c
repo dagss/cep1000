@@ -1,7 +1,6 @@
 #include <stddef.h>
 #include "cep1000test.h"
 
-#define N 1
 
 PyUnofficialTypeObject my_callable_type;
 
@@ -44,11 +43,10 @@ void *get_f_callable_key() {
   result->ob_call_slots = table;
   
   for (i = 0; i != N; ++i) {
-    table[i] = (key_call_slot_t){2, 3, 4, 0, 0, NULL};
+    table[i] = (key_call_slot_t){2, NULL};
   }
-  table[N - 1] = (key_call_slot_t){FUNC_KEY1, FUNC_KEY2, FUNC_KEY3, FUNC_KEY4, FUNC_KEY5,
-                                   FUNC_KEY6, FUNC_KEY7, &func};
-  table[N] = (key_call_slot_t){0, 0, 0, 0, 0, NULL};
+  table[N - 1] = (key_call_slot_t){FUNC_KEY1, &func};
+  table[N] = (key_call_slot_t){0, NULL};
 
   return result;
 }

@@ -1,6 +1,15 @@
 #include <stdlib.h>
 #include "cep1000test.h"
 
+#if USE_LIKELY
+#define perhaps_likely(x) __builtin_expect((x),1)
+#else
+#define perhaps_likely(x) x
+#endif
+
+#define likely(x)       __builtin_expect((x),1) 
+#define unlikely(x)     __builtin_expect((x),0)
+
 static char *interned_dd;
 static char *mismatch0, *mismatch1, *mismatch2, *mismatch3;
 
@@ -13,9 +22,10 @@ double docall_intern(PyMyCallable *obj, double argument) {
     size_t nativecall_offset = ((PyUnofficialTypeObject*)obj->ob_type)->tp_nativecall_offset;
     if (nativecall_offset != 0) {
       intern_call_slot_t *slots = *(intern_call_slot_t**)((char*)obj + nativecall_offset);
-      while (1) {
-        char *sig = slots->interned_signature;
-        /*if (sig == mismatch0) {
+      for (int i = 0; i != N; ++i) {
+        char *sig = slots[i].interned_signature;
+#if MISMATCHES
+        if (sig == mismatch0) {
           exit(4);
         } else if (sig == mismatch1) {
           exit(5);
@@ -23,21 +33,16 @@ double docall_intern(PyMyCallable *obj, double argument) {
           exit(6);
         } else if (sig == mismatch3) {
           exit(7);
-          } else*/ if (sig == interned_dd) {
-          callable_func_t pfunc = slots->funcptr;
+        } else
+#endif
+          if (perhaps_likely(sig == interned_dd)) {
+          callable_func_t pfunc = slots[i].funcptr;
           return (*pfunc)(argument);
-        } else if (sig == NULL) {
-          printf("NO MATCHING sig\n");
-          exit(3);
         }
-        slots++;
       }
-    } else {
-      exit(1);
     }
-  } else {
-    exit(2);
   }
+  exit(10);
 }
 
 double docall_key(PyMyCallable *obj, double argument) {
@@ -45,33 +50,27 @@ double docall_key(PyMyCallable *obj, double argument) {
     size_t nativecall_offset = ((PyUnofficialTypeObject*)obj->ob_type)->tp_nativecall_offset;
     if (nativecall_offset != 0) {
       key_call_slot_t *slots = *(key_call_slot_t**)((char*)obj + nativecall_offset);
-      while (1) {
-        /*if (key == 1) {
-          exit(4);
+      for (int i = 0; i != N; ++i) {
+        size_t key = slots[i].key1;
+#if MISMATCHES
+        if (key == 1) {
+          exit(8);
         } else if (key == 0x34524561234) {
           exit(5);
         } else if (key == 0x324563243223) {
           exit(6);
         } else if (key == 0x8534f324234) {
           exit(7);
-          } else*/
-        if (slots->key1 == FUNC_KEY1 && slots->key2 == FUNC_KEY2 && 
-            slots->key3 == FUNC_KEY3 && slots->key4 == FUNC_KEY4 &&
-            slots->key5 == FUNC_KEY5 && slots->key6 == FUNC_KEY6 &&
-            slots->key7 == FUNC_KEY7) {
-          callable_func_t pfunc = slots->funcptr;
+        } else
+#endif
+          if (perhaps_likely(key == FUNC_KEY1)) {
+          callable_func_t pfunc = slots[i].funcptr;
           return (*pfunc)(argument);
-        } else if (slots->key1 == 0) {
-          exit(3);
         }
-        slots++;
       }
-    } else {
-      exit(1);
     }
-  } else {
-    exit(2);
   }
+  exit(4);
 }
 
 
