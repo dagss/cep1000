@@ -46,7 +46,7 @@ char *get_interned_something_else(int);
 void initialize_mycallable();
 
 /* implemented in mycaller */
-double docall_direct(callable_func_t callable, double argument);
+double docall_dispatch(callable_func_t callable, double argument);
 double docall_intern(PyMyCallable *func, double argument);
 double docall_key(PyMyCallable *func, double argument);
 void initialize_mycaller();

@@ -4,7 +4,7 @@
 static char *interned_dd;
 static char *mismatch0, *mismatch1, *mismatch2, *mismatch3;
 
-double docall_direct(callable_func_t callable, double argument) {
+double docall_dispatch(callable_func_t callable, double argument) {
   return (*callable)(argument);
 }
 

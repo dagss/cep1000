@@ -1,7 +1,7 @@
 #include <time.h>
 #include "cep1000test.h"
 
-#define J 100000
+#define J 10000
 #define K 10000
 
 static double walltime() {
@@ -44,27 +44,39 @@ int main(int argc, char *argv[]) {
 
   void *obj_intern = get_f_callable_intern();
   void *obj_key = get_f_callable_key();
-  printf("Direct result: %f\n", docall_direct(&func, 2.0));
+  printf("Direct result: %f\n", func(2.0));
   printf("Intern result: %f\n", docall_intern(obj_intern, 2.0));
   printf("Key result: %f\n", docall_key(obj_key, 2.0));
 
 
+  double s = 0;
   {
-    double s = 0;
     double times[K];
     for (int k = 0; k != K; ++k) {
       double t0 = walltime();
       for (int i = 0; i != J; i++) {
-        s += docall_direct(&func, 2.0);
+        s += func(2.0);
       }
       times[k] = walltime() - t0;
     }
     snftime(tbuf, 100, arrmin(times, K) / (double)J);
-    printf("Direct took %s (result %f)\n", tbuf, s);
+    printf("Direct took %s\n", tbuf);
   }
 
   {
-    double s = 0;
+    double times[K];
+    for (int k = 0; k != K; ++k) {
+      double t0 = walltime();
+      for (int i = 0; i != J; i++) {
+        s += docall_dispatch(&func, 2.0);
+      }
+      times[k] = walltime() - t0;
+    }
+    snftime(tbuf, 100, arrmin(times, K) / (double)J);
+    printf("Dispatch took %s\n", tbuf);
+  }
+
+  {
     double times[K];
     for (int k = 0; k != K; ++k) {
       double t0 = walltime();
@@ -74,11 +86,10 @@ int main(int argc, char *argv[]) {
       times[k] = walltime() - t0;
     }
     snftime(tbuf, 100, arrmin(times, K) / (double)J);
-    printf("Intern method took %s (result %f)\n", tbuf, s);
+    printf("Intern method took %s\n", tbuf);
   }
 
   {
-    double s = 0;
     double times[K];
     for (int k = 0; k != K; ++k) {
       double t0 = walltime();
@@ -88,8 +99,8 @@ int main(int argc, char *argv[]) {
       times[k] = walltime() - t0;
     }
     snftime(tbuf, 100, arrmin(times, K) / (double)J);
-    printf("Key method took %s (result %f)\n", tbuf, s);
+    printf("Key method took %s\n", tbuf);
   }
-
+  printf("s: %f\n", s);
   return 0;
 }
