@@ -1,14 +1,6 @@
 #include <stdlib.h>
 #include "cep1000test.h"
 
-#if USE_LIKELY
-#define perhaps_likely(x) __builtin_expect((x),1)
-#else
-#define perhaps_likely(x) x
-#endif
-
-#define likely(x)       __builtin_expect((x),1) 
-#define unlikely(x)     __builtin_expect((x),0)
 
 static char *interned_dd;
 static char *mismatch0, *mismatch1, *mismatch2, *mismatch3;
@@ -18,9 +10,9 @@ double docall_dispatch(callable_func_t callable, double argument) {
 }
 
 double docall_intern(PyMyCallable *obj, double argument) {
-  if (obj->ob_type->tp_flags | TPFLAGS_UNOFFICIAL) {
+  if (likely(obj->ob_type->tp_flags | TPFLAGS_UNOFFICIAL)) {
     size_t nativecall_offset = ((PyUnofficialTypeObject*)obj->ob_type)->tp_nativecall_offset;
-    if (nativecall_offset != 0) {
+    if (likely(nativecall_offset != 0)) {
       intern_call_slot_t *slots = *(intern_call_slot_t**)((char*)obj + nativecall_offset);
       for (int i = 0; i != N; ++i) {
         char *sig = slots[i].interned_signature;
@@ -45,10 +37,36 @@ double docall_intern(PyMyCallable *obj, double argument) {
   exit(10);
 }
 
+
+double docall_getfunc_intern(PyMyCallable *obj, double argument) {
+  if (likely(obj->ob_type->tp_flags | TPFLAGS_UNOFFICIAL)) {
+    PyUnofficialTypeObject *type = (PyUnofficialTypeObject*)obj->ob_type;
+    get_func_intern_t getfunc = type->tp_nativecall_getfunc;
+    if (likely(getfunc != NULL)) {
+      callable_func_t pfunc;
+#if MISMATCHES
+      if ((pfunc = (*getfunc)(obj, mismatch0, 1)) != NULL) {
+        exit(8);
+      } else if ((pfunc = (*getfunc)(obj, mismatch1, 1)) != NULL) {
+        exit(5);
+      } else if ((pfunc = (*getfunc)(obj, mismatch2, 1)) != NULL) {
+        exit(6);
+      } else if ((pfunc = (*getfunc)(obj, mismatch3, 1)) != NULL) {
+        exit(7);
+      } else
+#endif
+      if (perhaps_likely((pfunc = (*getfunc)(obj, interned_dd, 1)) != NULL)) {
+        return (*pfunc)(argument);
+      } 
+    }
+  }
+  exit(4);
+}
+
 double docall_key(PyMyCallable *obj, double argument) {
-  if (obj->ob_type->tp_flags | TPFLAGS_UNOFFICIAL) {
+  if (likely(obj->ob_type->tp_flags | TPFLAGS_UNOFFICIAL)) {
     size_t nativecall_offset = ((PyUnofficialTypeObject*)obj->ob_type)->tp_nativecall_offset;
-    if (nativecall_offset != 0) {
+    if (likely(nativecall_offset != 0)) {
       key_call_slot_t *slots = *(key_call_slot_t**)((char*)obj + nativecall_offset);
       for (int i = 0; i != N; ++i) {
         size_t key = slots[i].key1;
@@ -68,6 +86,31 @@ double docall_key(PyMyCallable *obj, double argument) {
           return (*pfunc)(argument);
         }
       }
+    }
+  }
+  exit(4);
+}
+
+double docall_getfunc_key(PyMyCallable *obj, double argument) {
+  if (likely(obj->ob_type->tp_flags | TPFLAGS_UNOFFICIAL)) {
+    PyUnofficialTypeObject *type = (PyUnofficialTypeObject*)obj->ob_type;
+    get_func_key_t getfunc = type->tp_nativecall_getfunc;
+    if (likely(getfunc != NULL)) {
+      callable_func_t pfunc;
+#if MISMATCHES
+      if ((pfunc = (*getfunc)(obj, 1, 1)) != NULL) {
+        exit(8);
+      } else if ((pfunc = (*getfunc)(obj, 0x345234234fff, 1)) != NULL) {
+        exit(5);
+      } else if ((pfunc = (*getfunc)(obj, 0xffaabb34534, 1)) != NULL) {
+        exit(6);
+      } else if ((pfunc = (*getfunc)(obj, 0x654234234fff, 1)) != NULL) {
+        exit(7);
+      } else
+#endif
+      if (perhaps_likely((pfunc = (*getfunc)(obj, FUNC_KEY1, 1)) != NULL)) {
+        return (*pfunc)(argument);
+      } 
     }
   }
   exit(4);
