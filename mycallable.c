@@ -5,30 +5,54 @@
 PyUnofficialTypeObject my_callable_type_intern;
 PyUnofficialTypeObject my_callable_type_key;
 
-char *interned_dd;
+static char *interned[N];
+static void *pointers[N];
+/*char *interned_dd;*/
 
 double func(double x) {
   return x * x;
 }
 
 static void *get_func_ptr_intern(void *obj, char *interned_signature, int has_gil) {
-  if (interned_signature == interned_dd) {
-    return &func;
-  } else {
-    return NULL;
+  for (int i = 0; i != N; ++i) {
+    if (interned_signature == interned[i]) return pointers[i];
   }
+  return NULL;
 }
 
 static void *get_func_ptr_key(void *obj, size_t key, int has_gil) {
+#if N == 10
+  switch (key) {
+  case 0x1234bbbbbbbb:
+    return (void*)1;
+  case 0x4fff50:
+    return (void*)423;
+  case 0x5ff0:
+    return (void*)432;
+  case 0x4fff0:
+    return (void*)432;
+  case 0x54ff0:
+    return (void*)423;
+  case 0x3ff0:
+    return (void*)432;
+  case 0x43ff0:
+    return (void*)432;
+  case 0x4ff0:
+    return (void*)234;
+  case 0x34ff0:
+    return (void*)43;
+  case FUNC_KEY1:
+    return &func;
+  }
+#else
+#if N != 1
+#error N 1 or 10 supported
+#endif
   if (perhaps_likely(key == FUNC_KEY1)) {
     return &func;
-  } else {
-    return NULL;
   }
-}
-
-char *get_interned_something_else(int dummy) {
-  return "something else";
+#endif
+return NULL;
 }
 
 void *get_f_callable_intern() {
@@ -67,8 +91,12 @@ void *get_f_callable_key() {
 }
 
 void initialize_mycallable() {
-  int i;
-  interned_dd = get_interned_dd();
+  for (int i = 0; i != N - 1; ++i) {
+    interned[i] = get_interned_something_yet_different(i);
+    pointers[i] = get_interned_something_yet_different(2 * i);
+  }
+  interned[N - 1] = get_interned_dd();
+  pointers[N - 1] = &func;
 
   memset(&my_callable_type_intern, 0, sizeof(PyUnofficialTypeObject));
   my_callable_type_intern.tp_base.tp_flags = TPFLAGS_UNOFFICIAL;

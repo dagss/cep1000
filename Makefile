@@ -4,6 +4,7 @@ bench: bench.c libmycaller.so libmycallable.so libinterned.so
 	gcc $(CFLAGS) -o bench -L. bench.c -lmycallable -lmycaller -linterned -lrt
 
 libmycallable.so: mycallable.c Makefile cep1000test.h
+	gcc $(CFLAGS) -S -o mycallable.S mycallable.c
 	gcc $(CFLAGS) -shared -o libmycallable.so mycallable.c
 
 libmycaller.so: mycaller.c Makefile cep1000test.h

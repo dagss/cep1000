@@ -5,7 +5,7 @@
 /* should caller try to match 4 non-matching signatures before the match? */
 #define MISMATCHES 0
 /* use likely macro around match? */
-#define USE_LIKELY 0
+#define USE_LIKELY 1
 
 #if USE_LIKELY
 #define perhaps_likely(x) __builtin_expect((x),1)
@@ -20,7 +20,7 @@
 #define TPFLAGS_UNOFFICIAL 20
 
 
-#define FUNC_KEY1 0x1234bbbbbbbb
+#define FUNC_KEY1 0xffff0
 #define FUNC_KEY2 0x12345bbbbbbb
 #define FUNC_KEY3 0x12366bbbbbbb
 #define FUNC_KEY4 0x12377aaaaaaa
@@ -64,6 +64,7 @@ void *get_f_callable_intern();
 void *get_f_callable_key();
 char *get_interned_dd();
 char *get_interned_something_else(int);
+char *get_interned_something_yet_different(int);
 void initialize_mycallable();
 
 /* implemented in mycaller */

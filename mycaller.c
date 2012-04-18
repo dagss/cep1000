@@ -60,7 +60,7 @@ double docall_getfunc_intern(PyMyCallable *obj, double argument) {
       } 
     }
   }
-  exit(4);
+  exit(10);
 }
 
 double docall_key(PyMyCallable *obj, double argument) {

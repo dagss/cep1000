@@ -2,7 +2,7 @@
 #include "cep1000test.h"
 
 #define J 100000
-#define K 10000
+#define K 20000
 
 static double walltime() {
   struct timespec tv;
@@ -47,11 +47,12 @@ int main(int argc, char *argv[]) {
   printf("Direct result: %f\n", func(2.0));
   printf("Intern result: %f\n", docall_intern(obj_intern, 2.0));
   printf("Key result: %f\n", docall_key(obj_key, 2.0));
+  printf("Intern+getfunc result: %f\n", docall_getfunc_intern(obj_intern, 2.0));
   printf("Key+getfunc result: %f\n", docall_getfunc_key(obj_key, 2.0));
 
 
   double s = 0;
-  /*  {
+    {
     double times[K];
     for (int k = 0; k != K; ++k) {
       double t0 = walltime();
@@ -75,7 +76,7 @@ int main(int argc, char *argv[]) {
     }
     snftime(tbuf, 100, arrmin(times, K) / (double)J);
     printf("Dispatch took %s\n", tbuf);
-    }*/
+    }
 
   {
     double times[K];
@@ -101,7 +102,7 @@ int main(int argc, char *argv[]) {
     }
     snftime(tbuf, 100, arrmin(times, K) / (double)J);
     printf("Key method took %s\n", tbuf);
-  }
+    }
 
   {
     double times[K];
